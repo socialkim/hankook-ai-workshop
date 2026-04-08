@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한국일보 AI 실습 교육 — 3회차: AI 자동화</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root {
+  --hk-navy: #003366;
+  --hk-navy-light: #E8EFF5;
+  --hk-navy-mid: #1D3557;
+  --hk-red: #E63946;
+  --hk-red-light: #FDE8EA;
+  --hk-bg: #F1FAEE;
+  --hk-gray: #A8DADC;
+  --hk-gray-light: #D4EDEE;
+  --hk-white: #FFFFFF;
+  --hk-dark: #0A1628;
+  --hk-text: #1A1A2E;
+  --hk-text2: #5A6B7D;
+  --hk-border: #D1DEE8;
+  --hk-qa-bg: #FFF8E1;
+  --hk-qa-border: #FFD54F;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --font: 'Pretendard Variable', -apple-system, system-ui, sans-serif;
+  --font-size: 15px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); background: var(--hk-bg); color: var(--hk-text); font-size: var(--font-size); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+.hero { background: linear-gradient(135deg, var(--hk-navy) 0%, var(--hk-navy-mid) 60%, #2A4A7F 100%); padding: 48px 24px 40px; text-align: center; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 240px; height: 240px; background: var(--hk-red); opacity: 0.12; border-radius: 50%; }
+.hero::after { content: ''; position: absolute; bottom: -80px; left: 20%; width: 320px; height: 320px; background: var(--hk-gray); opacity: 0.08; border-radius: 50%; }
+.hero-inner { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; }
+.hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18); backdrop-filter: blur(8px); border-radius: 999px; padding: 6px 18px; font-size: 13px; color: var(--hk-gray); font-weight: 600; letter-spacing: 0.3px; margin-bottom: 16px; }
+.hero h1 { font-size: clamp(26px, 5vw, 38px); font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: -0.02em; }
+.hero .subtitle { font-size: clamp(15px, 2.5vw, 19px); color: rgba(255,255,255,0.7); font-weight: 500; }
+.hero .date-info { margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 400; }
+.container { max-width: 960px; margin: 0 auto; padding: 24px 20px 80px; }
+.section-label { font-size: 13px; font-weight: 700; color: var(--hk-navy); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-left: 4px; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.card { background: var(--hk-white); border: 1px solid var(--hk-border); border-radius: var(--radius); padding: 24px; cursor: pointer; transition: all 0.25s; position: relative; box-shadow: var(--shadow); }
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,51,102,0.1); }
+.card.active { border-color: var(--hk-navy); box-shadow: 0 0 0 2px rgba(0,51,102,0.2); }
+.card-icon { font-size: 28px; margin-bottom: 10px; }
+.card-step { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--hk-red); letter-spacing: 1px; margin-bottom: 4px; }
+.card-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.card-dept { font-size: 12px; font-weight: 600; color: var(--hk-navy); background: var(--hk-navy-light); display: inline-block; padding: 2px 10px; border-radius: 999px; margin-bottom: 8px; }
+.card-tools { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.tool-pill { font-size: 11px; padding: 3px 10px; border-radius: 999px; font-weight: 600; }
+.tool-pill.chatgpt { background: #E8F5E9; color: #2E7D32; }
+.tool-pill.gemini { background: #E8EAF6; color: #3949AB; }
+.tool-pill.claude { background: #FFF3E0; color: #E65100; }
+.tool-pill.all { background: #F3E8FF; color: #7C3AED; }
+.tool-pill.canva { background: #F3E5F5; color: #7B1FA2; }
+.card-desc { font-size: 13px; color: var(--hk-text2); }
+.card .required-badge { position: absolute; top: 12px; left: 12px; background: var(--hk-red); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.progress-dot { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--hk-border); display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; transition: all 0.2s; background: #fff; }
+.progress-dot[data-state="1"] { border-color: #F59E0B; background: #FEF3C7; color: #D97706; }
+.progress-dot[data-state="2"] { border-color: #10B981; background: #D1FAE5; color: #059669; }
+.progress-dot::after { content: ''; display: block; }
+.progress-dot[data-state="0"]::after { content: ''; }
+.progress-dot[data-state="1"]::after { content: '\23F3'; }
+.progress-dot[data-state="2"]::after { content: '\2713'; font-weight: 700; }
+.progress-label { position: absolute; top: 46px; right: 6px; font-size: 10px; color: var(--hk-text2); white-space: nowrap; }
+.accordion { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(.4,0,.2,1); margin-bottom: 8px; }
+.accordion.open { margin-bottom: 24px; }
+.accordion-inner { background: var(--hk-white); border: 1px solid var(--hk-border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
+.tool-links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+.tool-link { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; color: #fff; transition: opacity 0.2s; }
+.tool-link:hover { opacity: 0.85; }
+.tool-link.chatgpt { background: linear-gradient(135deg, #10A37F, #1A7F64); }
+.tool-link.gemini { background: linear-gradient(135deg, #4F46E5, #6366F1); }
+.tool-link.claude { background: linear-gradient(135deg, #D97706, #EC8936); }
+.tool-link.canva { background: linear-gradient(135deg, #7B1FA2, #AB47BC); }
+.prompt-block { background: #F8FAFB; border: 1px solid var(--hk-border); border-radius: 12px; padding: 18px; margin-bottom: 14px; position: relative; }
+.prompt-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.prompt-num { font-size: 12px; font-weight: 700; color: var(--hk-navy); background: var(--hk-navy-light); padding: 2px 10px; border-radius: 999px; min-width: 20px; text-align: center; }
+.prompt-title { font-weight: 600; font-size: 14px; flex: 1; }
+.prompt-badge { font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 600; }
+.prompt-badge.chatgpt { background: #E8F5E9; color: #2E7D32; }
+.prompt-badge.claude { background: #FFF3E0; color: #E65100; }
+.prompt-badge.all { background: #F3E8FF; color: #7C3AED; }
+.prompt-body { font-family: 'Pretendard Variable', monospace; font-size: 13.5px; background: #fff; border: 1px solid var(--hk-border); border-radius: var(--radius-sm); padding: 16px; color: var(--hk-text); white-space: pre-wrap; word-break: keep-all; line-height: 1.75; position: relative; cursor: pointer; transition: border-color 0.2s; }
+.prompt-body:hover { border-color: var(--hk-navy); }
+.copy-btn { position: absolute; top: 10px; right: 10px; background: var(--hk-navy); color: #fff; border: none; border-radius: var(--radius-sm); padding: 5px 14px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: var(--font); }
+.copy-btn:hover { background: var(--hk-red); }
+.copy-btn.copied { background: #10B981; }
+.info-tip { background: var(--hk-navy-light); border-left: 3px solid var(--hk-navy); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 14px 16px; margin-bottom: 18px; font-size: 13.5px; color: var(--hk-navy-mid); line-height: 1.6; }
+.qa-box { background: var(--hk-qa-bg); border: 1px solid var(--hk-qa-border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 18px; font-size: 13.5px; line-height: 1.7; }
+.qa-box-title { font-weight: 700; font-size: 14px; color: #F57F17; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.qa-box-title::before { content: '\1F4A1'; }
+.qa-item { margin-bottom: 12px; }
+.qa-item:last-child { margin-bottom: 0; }
+.qa-q { font-weight: 700; color: var(--hk-text); margin-bottom: 2px; }
+.qa-a { color: var(--hk-text2); }
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--hk-dark); color: #fff; padding: 12px 28px; border-radius: 12px; font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.35s; pointer-events: none; z-index: 999; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.font-ctrl { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 6px; z-index: 100; }
+.font-ctrl button { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--hk-border); background: var(--hk-white); font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow); transition: all 0.2s; font-family: var(--font); }
+.font-ctrl button:hover { background: var(--hk-navy); color: #fff; border-color: var(--hk-navy); }
+@media (max-width: 640px) { .card-grid { grid-template-columns: 1fr; } .accordion-inner { padding: 18px 14px; } .hero { padding: 36px 16px 32px; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">한국일보 AI 실습 교육</div>
+    <h1>AI 자동화: 데이터 분석과 챗봇 구축</h1>
+    <p class="subtitle">3회차 실습 대시보드</p>
+    <p class="date-info">일시 미정 | 임원/팀장/과장급 대상</p>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="section-label">실습 과제 (5개)</div>
+
+<div class="card-grid">
+  <div class="card" onclick="toggleAccordion(1)" id="card-1">
+    <div class="progress-dot" data-state="0" onclick="event.stopPropagation();cycleProgress(this)"></div>
+    <div class="progress-label">미시작</div>
+    <div class="card-icon">&#x1F4CA;</div>
+    <div class="card-step">실습 1</div>
+    <div class="card-dept">경영지원실</div>
+    <div class="card-title">조직도 엑셀 분석</div>
+    <div class="card-tools">
+      <span class="tool-pill chatgpt">ChatGPT</span>
+      <span class="tool-pill claude">Claude</span>
+    </div>
+    <div class="card-desc">엑셀 업로드 → AI 분석 → 차트 시각화 → 보고서</div>
+  </div>
+
+  <div class="card" onclick="toggleAccordion(2)" id="card-2">
+    <div class="progress-dot" data-state="0" onclick="event.stopPropagation();cycleProgress(this)"></div>
+    <div class="progress-label">미시작</div>
+    <div class="card-icon">&#x1FA7A;</div>
+    <div class="card-step">실습 2</div>
+    <div class="card-dept">경영지원실</div>
+    <div class="card-title">AI 건강관리 상담</div>
+    <div class="card-tools">
+      <span class="tool-pill chatgpt">ChatGPT</span>
+      <span class="tool-pill claude">Claude</span>
+    </div>
+    <div class="card-desc">건강검진 해석 + 맞춤형 건강 도우미 만들기</div>
+  </div>
+
+  <div class="card" onclick="toggleAccordion(3)" id="card-3">
+    <div class="progress-dot" data-state="0" onclick="event.stopPropagation();cycleProgress(this)"></div>
+    <div class="progress-label">미시작</div>
+    <div class="card-icon">&#x1F4C5;</div>
+    <div class="card-step">실습 3</div>
+    <div class="card-dept">콘텐츠본부</div>
+    <div class="card-title">아카이브 '기억할 오늘' GPTs</div>
+    <div class="card-tools">
+      <span class="tool-pill chatgpt">ChatGPT GPTs</span>
+    </div>
+    <div class="card-desc">오늘의 뉴스 + 과거 기사 연결 GPTs 제작</div>
+  </div>
+
+  <div class="card" onclick="toggleAccordion(4)" id="card-4">
+    <div class="progress-dot" data-state="0" onclick="event.stopPropagation();cycleProgress(this)"></div>
+    <div class="progress-label">미시작</div>
+    <div class="card-icon">&#x1F4DE;</div>
+    <div class="card-step">실습 4</div>
+    <div class="card-dept">독자마케팅국</div>
+    <div class="card-title">전화번호 자동 안내 챗봇</div>
+    <div class="card-tools">
+      <span class="tool-pill chatgpt">ChatGPT GPTs</span>
+    </div>
+    <div class="card-desc">GPTs 챗봇으로 부서 안내 도우미 10분 만에 제작</div>
+  </div>
+
+  <div class="card" onclick="toggleAccordion(5)" id="card-5">
+    <div class="progress-dot" data-state="0" onclick="event.stopPropagation();cycleProgress(this)"></div>
+    <div class="progress-label">미시작</div>
+    <div class="card-icon">&#x1F3AC;</div>
+    <div class="card-step">실습 5</div>
+    <div class="card-dept">광고사업본부</div>
+    <div class="card-title">포럼 콘텐츠 가공</div>
+    <div class="card-tools">
+      <span class="tool-pill chatgpt">ChatGPT</span>
+      <span class="tool-pill claude">Claude</span>
+      <span class="tool-pill canva">Canva AI</span>
+    </div>
+    <div class="card-desc">포럼 요약 → SNS 5종 + 카드뉴스 + 영상 스크립트</div>
+  </div>
+</div>
+
+<!-- Accordion 1: 조직도 엑셀 분석 -->
+<div class="accordion" id="acc-1">
+<div class="accordion-inner">
+<div class="info-tip">
+  엑셀 파일을 AI에 업로드하면 분석, 차트, 보고서가 한 번에 나옵니다. ChatGPT의 Code Interpreter가 시각화에 가장 강력합니다.
+</div>
+<div class="tool-links">
+  <a class="tool-link chatgpt" href="https://chat.openai.com" target="_blank">ChatGPT 열기</a>
+  <a class="tool-link claude" href="https://claude.ai" target="_blank">Claude 열기</a>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">1</span>
+    <span class="prompt-title">조직도 데이터 분석</span>
+    <span class="prompt-badge chatgpt">ChatGPT</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">당신은 데이터 분석 전문가입니다.
+
+첨부된 엑셀 파일은 한국일보의 조직도 인원 현황입니다. 다음을 분석해주세요:
+
+1. 부서별 인원 현황 (표 + 막대 차트)
+2. 직급별 분포 (원형 차트)
+3. 최근 6개월 인원 변동 사항 요약
+4. 평균 근속연수 부서별 비교
+5. 이상치 또는 주의가 필요한 부서 (인원 과다/부족)
+
+[분석 후 요청]
+- 인사위원회 보고용 1페이지 요약본도 만들어주세요<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+</div>
+</div>
+
+<!-- Accordion 2: AI 건강관리 상담 -->
+<div class="accordion" id="acc-2">
+<div class="accordion-inner">
+<div class="info-tip">
+  건강검진 결과를 AI로 해석합니다. <strong>주의: AI 건강 상담은 참고용이며, 의사 상담을 반드시 병행해야 합니다.</strong>
+</div>
+<div class="qa-box">
+  <div class="qa-box-title">참석자 FAQ</div>
+  <div class="qa-item">
+    <div class="qa-q">Q: "AI 건강 상담, 의료법 위반 아닌가요?"</div>
+    <div class="qa-a">A: AI가 "진단"을 하는 것은 문제가 될 수 있지만, "건강검진 결과를 쉽게 설명해주는 것"은 정보 제공 목적입니다. 프롬프트 안에 "참고용" 제한을 명시하는 것이 핵심입니다.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">Q: "개인 건강 데이터를 AI에 넣어도 괜찮은가요?"</div>
+    <div class="qa-a">A: 유료 플랜은 대화 내용을 학습에 사용하지 않습니다. 실습에서는 더미 데이터를 사용하고, 실제 사용 시에는 개인 판단으로 하시면 됩니다.</div>
+  </div>
+</div>
+<div class="tool-links">
+  <a class="tool-link chatgpt" href="https://chat.openai.com" target="_blank">ChatGPT 열기</a>
+  <a class="tool-link claude" href="https://claude.ai" target="_blank">Claude 열기</a>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">1</span>
+    <span class="prompt-title">건강검진 결과 분석</span>
+    <span class="prompt-badge all">ChatGPT / Claude</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">당신은 직장인 건강관리 전문 상담사입니다.
+
+아래 건강검진 결과를 분석하여 맞춤형 건강 가이드를 제공해주세요.
+
+[검진 결과]
+- 성별: 남성, 나이: 52세
+- 혈압: 145/92 (고혈압 전단계)
+- 공복혈당: 118 mg/dL (당뇨 전단계)
+- 총콜레스테롤: 242 mg/dL (경계)
+- BMI: 27.3 (과체중)
+- 간수치(ALT): 58 (약간 상승)
+
+[요청]
+1. 주요 위험 요인 정리
+2. 생활습관 개선 가이드 (식이, 운동, 수면)
+3. 추가 검사 추천 항목
+4. 3개월 후 재검 시 목표 수치
+
+★ 주의: AI 건강 상담은 참고용이며, 반드시 의사 상담을 병행하세요.<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+</div>
+</div>
+
+<!-- Accordion 3: 아카이브 기억할 오늘 -->
+<div class="accordion" id="acc-3">
+<div class="accordion-inner">
+<div class="info-tip">
+  ChatGPT GPTs로 "한국일보 기억할 오늘" 도구를 직접 만듭니다. 오늘의 뉴스와 과거 기사를 자동 연결하는 맞춤형 AI 도구입니다.
+</div>
+<div class="tool-links">
+  <a class="tool-link chatgpt" href="https://chat.openai.com/gpts/editor" target="_blank">GPTs 만들기</a>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">1</span>
+    <span class="prompt-title">GPTs 제작 — "기억할 오늘"</span>
+    <span class="prompt-badge chatgpt">ChatGPT GPTs</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">[GPTs 제작 가이드]
+
+1. ChatGPT → "GPTs 만들기" 클릭
+2. 이름: "한국일보 기억할 오늘"
+3. 설명: "오늘의 뉴스와 과거 한국일보 기사를 연결하는 AI"
+4. 지시문(Instructions):
+   "당신은 한국일보의 '기억할 오늘' 코너 편집자입니다.
+   사용자가 오늘의 뉴스 키워드를 입력하면:
+   1. 해당 키워드와 관련된 과거 주요 사건/보도를 시간순으로 정리
+   2. '오늘의 뉴스'와 '과거 기사'의 연결 포인트 분석
+   3. 독자에게 전달할 '기억할 오늘' 150자 요약문 생성
+   4. SNS 공유용 한줄 카피 3개 제안"
+5. "저장" → 링크 공유 가능
+
+[테스트] "반도체 수출 호조"를 입력해보세요<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+</div>
+</div>
+
+<!-- Accordion 4: 전화번호 챗봇 -->
+<div class="accordion" id="acc-4">
+<div class="accordion-inner">
+<div class="info-tip">
+  GPTs로 부서 안내 챗봇을 만듭니다. Knowledge에 부서 데이터를 넣으면 ARS를 대체할 수 있는 챗봇이 10분 만에 완성됩니다.
+</div>
+<div class="tool-links">
+  <a class="tool-link chatgpt" href="https://chat.openai.com/gpts/editor" target="_blank">GPTs 만들기</a>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">1</span>
+    <span class="prompt-title">GPTs 챗봇 — "한국일보 부서 안내"</span>
+    <span class="prompt-badge chatgpt">ChatGPT GPTs</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">[GPTs 챗봇 제작 — 단계별 실습]
+
+Step 1: ChatGPT → "GPTs 만들기"
+Step 2: 이름 — "한국일보 부서 안내"
+Step 3: 지시문:
+  "당신은 한국일보의 부서 안내 도우미입니다.
+  사용자가 문의하면 적절한 부서와 연락처를 안내합니다.
+  모르는 내용은 '대표번호 02-XXX-XXXX로 연락 부탁드립니다'로 안내합니다."
+Step 4: 지식(Knowledge)에 부서 데이터 파일 업로드
+Step 5: 대화 테스트
+Step 6: "게시" → 링크 복사 → 공유
+
+[부서 데이터 — 아래를 복사하여 txt로 저장 후 업로드]
+부서명 | 전화번호 | 주요 업무
+뉴스룸(정치부) | 02-XXX-1001 | 정치 뉴스 취재
+뉴스룸(경제부) | 02-XXX-1002 | 경제 뉴스 취재
+뉴스룸(사회부) | 02-XXX-1003 | 사회 뉴스 취재
+뉴스룸(국제부) | 02-XXX-1004 | 국제 뉴스 취재
+콘텐츠본부 | 02-XXX-2001 | 프리미엄/멀티미디어 콘텐츠
+영상부 | 02-XXX-2002 | 영상 제작
+독자마케팅국 | 02-XXX-3001 | 구독/독자 서비스
+광고사업본부 | 02-XXX-4001 | 광고/협찬/제휴
+경영지원실(인사) | 02-XXX-5001 | 채용/인사/복리후생
+경영지원실(총무) | 02-XXX-5002 | 시설/차량/총무
+기사 제보 | 02-XXX-9999 | 독자 제보 접수<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+</div>
+</div>
+
+<!-- Accordion 5: 포럼 콘텐츠 가공 -->
+<div class="accordion" id="acc-5">
+<div class="accordion-inner">
+<div class="info-tip">
+  포럼/세미나 후속 작업을 AI로 한 번에 처리합니다. SNS 콘텐츠 5종, 카드뉴스 기획안, 영상 스크립트를 동시에 생성합니다.
+</div>
+<div class="qa-box">
+  <div class="qa-box-title">참석자 FAQ</div>
+  <div class="qa-item">
+    <div class="qa-q">Q: "영상 요약, 카드뉴스 변환 도구가 있나요?"</div>
+    <div class="qa-a">A: <strong>영상 요약</strong>: NotebookLM에 넣으면 핵심 요약 자동 생성. 또는 다글로 속기 → ChatGPT 요약 2단계. <strong>카드뉴스</strong>: ChatGPT/Claude로 기획안 → Canva AI "Magic Design"에서 템플릿 적용 → 10분 완성. <strong>SNS 일괄</strong>: 하나의 프롬프트로 인스타/트위터/LinkedIn 동시 생성.</div>
+  </div>
+</div>
+<div class="tool-links">
+  <a class="tool-link chatgpt" href="https://chat.openai.com" target="_blank">ChatGPT 열기</a>
+  <a class="tool-link claude" href="https://claude.ai" target="_blank">Claude 열기</a>
+  <a class="tool-link canva" href="https://canva.com" target="_blank">Canva AI 열기</a>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">1</span>
+    <span class="prompt-title">SNS 콘텐츠 5종 동시 생성</span>
+    <span class="prompt-badge all">ChatGPT / Claude</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">당신은 한국일보 콘텐츠 마케팅 담당자입니다.
+
+아래 포럼 요약 내용을 기반으로 다음 콘텐츠를 제작해주세요:
+
+[포럼 정보]
+- 행사명: 2026 AI 미디어 포럼
+- 일시: 2026년 9월 15일
+- 주요 발표: 3건 (AI와 저널리즘, 미디어 자동화, 독자 경험 혁신)
+- 참석자: 200명 (언론사 임원, IT 기업, 학계)
+
+[제작 요청]
+1. 인스타그램 카드뉴스 5장 분량 기획안
+   - 각 장의 제목, 핵심 메시지, 비주얼 방향
+2. 유튜브 하이라이트 영상 스크립트 (3분)
+   - 나레이션 전문 + 자막 포인트
+3. 뉴스레터 발송용 요약 (300자)
+4. 트위터/X 게시물 5개<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">2</span>
+    <span class="prompt-title">LinkedIn 포스트</span>
+    <span class="prompt-badge all">ChatGPT / Claude</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">당신은 SNS 콘텐츠 전문가입니다.
+
+위 포럼 내용을 기반으로 LinkedIn 포스트를 작성해주세요.
+
+[요구사항]
+- 전문적이면서도 인사이트 있는 톤
+- 해시태그 5개 포함
+- 한국일보 공식 계정용
+- 한국어와 영어 버전 각 1개<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="toast" id="toast">복사되었습니다</div>
+<div class="font-ctrl">
+  <button onclick="changeFontSize(-1)" title="글자 작게">A-</button>
+  <button onclick="changeFontSize(1)" title="글자 크게">A+</button>
+</div>
+
+<script>
+let currentAccordion = null;
+function toggleAccordion(id) {
+  const key = String(id);
+  const accEl = document.getElementById('acc-' + key);
+  const cardEl = document.getElementById('card-' + key);
+  if (currentAccordion && currentAccordion !== key) {
+    const prevAcc = document.getElementById('acc-' + currentAccordion);
+    const prevCard = document.getElementById('card-' + currentAccordion);
+    if (prevAcc) { prevAcc.style.maxHeight = '0'; prevAcc.classList.remove('open'); }
+    if (prevCard) prevCard.classList.remove('active');
+  }
+  if (accEl.classList.contains('open')) {
+    accEl.style.maxHeight = '0'; accEl.classList.remove('open');
+    if (cardEl) cardEl.classList.remove('active');
+    currentAccordion = null;
+  } else {
+    accEl.classList.add('open'); accEl.style.maxHeight = accEl.scrollHeight + 'px';
+    if (cardEl) cardEl.classList.add('active');
+    currentAccordion = key;
+    setTimeout(() => { accEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  }
+}
+const progressLabels = ['미시작', '진행중', '완료'];
+function cycleProgress(dot) { let state = parseInt(dot.getAttribute('data-state')); state = (state + 1) % 3; dot.setAttribute('data-state', state); const label = dot.nextElementSibling; if (label) label.textContent = progressLabels[state]; }
+function copyFromBody(el) { const clone = el.cloneNode(true); clone.querySelectorAll('button').forEach(b => b.remove()); doCopy(clone.textContent.trim()); }
+function copyPrompt(btn) { const body = btn.parentElement; const clone = body.cloneNode(true); clone.querySelectorAll('button').forEach(b => b.remove()); doCopy(clone.textContent.trim()); btn.textContent = '복사 완료!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1500); }
+function doCopy(text) { navigator.clipboard.writeText(text).then(() => { showToast('복사되었습니다'); }).catch(() => { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('복사되었습니다'); }); }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+let fontSize = 15;
+function changeFontSize(delta) { fontSize = Math.max(12, Math.min(22, fontSize + delta)); document.documentElement.style.setProperty('--font-size', fontSize + 'px'); }
+</script>
+</body>
+</html>

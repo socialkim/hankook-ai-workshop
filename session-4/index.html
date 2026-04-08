@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한국일보 AI 실습 교육 — 4회차: AI 비주얼 심화 + 미래 전략</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root {
+  --hk-navy: #003366;
+  --hk-navy-light: #E8EFF5;
+  --hk-navy-mid: #1D3557;
+  --hk-red: #E63946;
+  --hk-red-light: #FDE8EA;
+  --hk-bg: #F1FAEE;
+  --hk-gray: #A8DADC;
+  --hk-gray-light: #D4EDEE;
+  --hk-white: #FFFFFF;
+  --hk-dark: #0A1628;
+  --hk-text: #1A1A2E;
+  --hk-text2: #5A6B7D;
+  --hk-border: #D1DEE8;
+  --hk-qa-bg: #FFF8E1;
+  --hk-qa-border: #FFD54F;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --font: 'Pretendard Variable', -apple-system, system-ui, sans-serif;
+  --font-size: 15px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); background: var(--hk-bg); color: var(--hk-text); font-size: var(--font-size); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+.hero { background: linear-gradient(135deg, var(--hk-navy) 0%, var(--hk-navy-mid) 60%, #2A4A7F 100%); padding: 48px 24px 40px; text-align: center; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 240px; height: 240px; background: var(--hk-red); opacity: 0.12; border-radius: 50%; }
+.hero::after { content: ''; position: absolute; bottom: -80px; left: 20%; width: 320px; height: 320px; background: var(--hk-gray); opacity: 0.08; border-radius: 50%; }
+.hero-inner { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; }
+.hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18); backdrop-filter: blur(8px); border-radius: 999px; padding: 6px 18px; font-size: 13px; color: var(--hk-gray); font-weight: 600; letter-spacing: 0.3px; margin-bottom: 16px; }
+.hero h1 { font-size: clamp(26px, 5vw, 38px); font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: -0.02em; }
+.hero .subtitle { font-size: clamp(15px, 2.5vw, 19px); color: rgba(255,255,255,0.7); font-weight: 500; }
+.hero .date-info { margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 400; }
+.container { max-width: 960px; margin: 0 auto; padding: 24px 20px 80px; }
+.section-label { font-size: 13px; font-weight: 700; color: var(--hk-navy); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-left: 4px; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.card { background: var(--hk-white); border: 1px solid var(--hk-border); border-radius: var(--radius); padding: 24px; cursor: pointer; transition: all 0.25s; position: relative; box-shadow: var(--shadow); }
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,51,102,0.1); }
+.card.active { border-color: var(--hk-navy); box-shadow: 0 0 0 2px rgba(0,51,102,0.2); }
+.card-icon { font-size: 28px; margin-bottom: 10px; }
+.card-step { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--hk-red); letter-spacing: 1px; margin-bottom: 4px; }
+.card-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.card-dept { font-size: 12px; font-weight: 600; color: var(--hk-navy); background: var(--hk-navy-light); display: inline-block; padding: 2px 10px; border-radius: 999px; margin-bottom: 8px; }
+.card-tools { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.tool-pill { font-size: 11px; padding: 3px 10px; border-radius: 999px; font-weight: 600; }
+.tool-pill.chatgpt { background: #E8F5E9; color: #2E7D32; }
+.tool-pill.claude { background: #FFF3E0; color: #E65100; }
+.tool-pill.ideogram { background: #E3F2FD; color: #1565C0; }
+.tool-pill.canva { background: #F3E5F5; color: #7B1FA2; }
+.tool-pill.dalle { background: #FFF3E0; color: #BF360C; }
+.tool-pill.all { background: #F3E8FF; color: #7C3AED; }
+.card-desc { font-size: 13px; color: var(--hk-text2); }
+.progress-dot { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--hk-border); display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; transition: all 0.2s; background: #fff; }
+.progress-dot[data-state="1"] { border-color: #F59E0B; background: #FEF3C7; color: #D97706; }
+.progress-dot[data-state="2"] { border-color: #10B981; background: #D1FAE5; color: #059669; }
+.progress-dot::after { content: ''; display: block; }
+.progress-dot[data-state="0"]::after { content: ''; }
+.progress-dot[data-state="1"]::after { content: '\23F3'; }
+.progress-dot[data-state="2"]::after { content: '\2713'; font-weight: 700; }
+.progress-label { position: absolute; top: 46px; right: 6px; font-size: 10px; color: var(--hk-text2); white-space: nowrap; }
+.accordion { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(.4,0,.2,1); margin-bottom: 8px; }
+.accordion.open { margin-bottom: 24px; }
+.accordion-inner { background: var(--hk-white); border: 1px solid var(--hk-border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
+.tool-links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+.tool-link { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; color: #fff; transition: opacity 0.2s; }
+.tool-link:hover { opacity: 0.85; }
+.tool-link.chatgpt { background: linear-gradient(135deg, #10A37F, #1A7F64); }
+.tool-link.claude { background: linear-gradient(135deg, #D97706, #EC8936); }
+.tool-link.ideogram { background: linear-gradient(135deg, #1565C0, #42A5F5); }
+.tool-link.canva { background: linear-gradient(135deg, #7B1FA2, #AB47BC); }
+.prompt-block { background: #F8FAFB; border: 1px solid var(--hk-border); border-radius: 12px; padding: 18px; margin-bottom: 14px; position: relative; }
+.prompt-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.prompt-num { font-size: 12px; font-weight: 700; color: var(--hk-navy); background: var(--hk-navy-light); padding: 2px 10px; border-radius: 999px; min-width: 20px; text-align: center; }
+.prompt-title { font-weight: 600; font-size: 14px; flex: 1; }
+.prompt-badge { font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 600; }
+.prompt-badge.chatgpt { background: #E8F5E9; color: #2E7D32; }
+.prompt-badge.ideogram { background: #E3F2FD; color: #1565C0; }
+.prompt-badge.all { background: #F3E8FF; color: #7C3AED; }
+.prompt-body { font-family: 'Pretendard Variable', monospace; font-size: 13.5px; background: #fff; border: 1px solid var(--hk-border); border-radius: var(--radius-sm); padding: 16px; color: var(--hk-text); white-space: pre-wrap; word-break: keep-all; line-height: 1.75; position: relative; cursor: pointer; transition: border-color 0.2s; }
+.prompt-body:hover { border-color: var(--hk-navy); }
+.copy-btn { position: absolute; top: 10px; right: 10px; background: var(--hk-navy); color: #fff; border: none; border-radius: var(--radius-sm); padding: 5px 14px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: var(--font); }
+.copy-btn:hover { background: var(--hk-red); }
+.copy-btn.copied { background: #10B981; }
+.info-tip { background: var(--hk-navy-light); border-left: 3px solid var(--hk-navy); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 14px 16px; margin-bottom: 18px; font-size: 13.5px; color: var(--hk-navy-mid); line-height: 1.6; }
+.qa-box { background: var(--hk-qa-bg); border: 1px solid var(--hk-qa-border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 18px; font-size: 13.5px; line-height: 1.7; }
+.qa-box-title { font-weight: 700; font-size: 14px; color: #F57F17; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.qa-box-title::before { content: '\1F4A1'; }
+.qa-item { margin-bottom: 12px; }
+.qa-item:last-child { margin-bottom: 0; }
+.qa-q { font-weight: 700; color: var(--hk-text); margin-bottom: 2px; }
+.qa-a { color: var(--hk-text2); }
+
+/* Review section */
+.review-section { background: var(--hk-white); border: 1px solid var(--hk-border); border-radius: var(--radius); padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow); }
+.review-title { font-size: 18px; font-weight: 800; color: var(--hk-navy); margin-bottom: 16px; }
+.review-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
+.review-table th { background: var(--hk-navy); color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; }
+.review-table td { padding: 8px 12px; border-bottom: 1px solid var(--hk-border); }
+.review-table tr:hover td { background: var(--hk-navy-light); }
+.review-session { font-weight: 700; color: var(--hk-navy-mid); background: var(--hk-bg); }
+
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--hk-dark); color: #fff; padding: 12px 28px; border-radius: 12px; font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.35s; pointer-events: none; z-index: 999; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.font-ctrl { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 6px; z-index: 100; }
+.font-ctrl button { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--hk-border); background: var(--hk-white); font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow); transition: all 0.2s; font-family: var(--font); }
+.font-ctrl button:hover { background: var(--hk-navy); color: #fff; border-color: var(--hk-navy); }
+@media (max-width: 640px) { .card-grid { grid-template-columns: 1fr; } .accordion-inner { padding: 18px 14px; } .hero { padding: 36px 16px 32px; } .review-table { font-size: 11px; } .review-section { padding: 16px; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">한국일보 AI 실습 교육</div>
+    <h1>AI 비주얼 심화 + 미래 전략</h1>
+    <p class="subtitle">4회차 실습 대시보드 (최종)</p>
+    <p class="date-info">일시 미정 | 임원/팀장/과장급 대상 | 마지막 회차</p>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="section-label">실습 과제 (2개) + 전체 리뷰</div>
+
+<div class="card-grid">
+  <div class="card" onclick="toggleAccordion(1)" id="card-1">
+    <div class="progress-dot" data-state="0" onclick="event.stopPropagation();cycleProgress(this)"></div>
+    <div class="progress-label">미시작</div>
+    <div class="card-icon">&#x1F4F0;</div>
+    <div class="card-step">실습 1</div>
+    <div class="card-dept">광고사업본부</div>
+    <div class="card-title">AI 광고물 제작 테스트</div>
+    <div class="card-tools">
+      <span class="tool-pill chatgpt">ChatGPT</span>
+      <span class="tool-pill claude">Claude</span>
+      <span class="tool-pill ideogram">Ideogram</span>
+    </div>
+    <div class="card-desc">광고 카피 기획 + 배너 이미지 생성 + A/B 테스트</div>
+  </div>
+
+  <div class="card" onclick="toggleAccordion(2)" id="card-2">
+    <div class="progress-dot" data-state="0" onclick="event.stopPropagation();cycleProgress(this)"></div>
+    <div class="progress-label">미시작</div>
+    <div class="card-icon">&#x1F3A8;</div>
+    <div class="card-step">실습 2</div>
+    <div class="card-dept">콘텐츠본부</div>
+    <div class="card-title">이미지/디자인 심화</div>
+    <div class="card-tools">
+      <span class="tool-pill ideogram">Ideogram</span>
+      <span class="tool-pill canva">Canva AI</span>
+    </div>
+    <div class="card-desc">Ideogram 한글 텍스트 + Canva Magic Design 심화</div>
+  </div>
+</div>
+
+<!-- Accordion 1: 광고물 제작 -->
+<div class="accordion" id="acc-1">
+<div class="accordion-inner">
+<div class="info-tip">
+  AI로 광고 배너의 "초안 단계"를 30분 안에 끝냅니다. 카피 기획(ChatGPT/Claude) → 이미지 생성(Ideogram/DALL-E) → A/B 변형까지.
+</div>
+<div class="tool-links">
+  <a class="tool-link chatgpt" href="https://chat.openai.com" target="_blank">ChatGPT 열기</a>
+  <a class="tool-link claude" href="https://claude.ai" target="_blank">Claude 열기</a>
+  <a class="tool-link ideogram" href="https://ideogram.ai" target="_blank">Ideogram 열기</a>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">1</span>
+    <span class="prompt-title">카피 및 레이아웃 기획</span>
+    <span class="prompt-badge all">ChatGPT / Claude</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">당신은 한국일보 광고 운영팀의 디자이너입니다.
+
+아래 광고주 정보를 바탕으로 웹 배너 광고 3종의 카피와 레이아웃을 기획해주세요.
+
+[광고주 정보]
+- 브랜드: 삼성전자 Galaxy S26
+- 핵심 메시지: "AI가 바꾸는 일상, Galaxy S26"
+- 컬러: 미드나이트 블루, 화이트
+- 배너 사이즈: 728x90(리더보드), 300x250(미디엄), 160x600(스카이스크래퍼)
+
+[요청]
+1. 각 사이즈별 카피 (메인 + 서브 + CTA)
+2. 레이아웃 설명 (이미지/텍스트 배치)
+3. A/B 테스트용 카피 변형 2종씩<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">2</span>
+    <span class="prompt-title">Ideogram 배너 이미지 생성</span>
+    <span class="prompt-badge ideogram">Ideogram</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">Samsung Galaxy S26 web banner advertisement,
+midnight blue background, white text,
+clean minimalist design,
+main text: AI가 바꾸는 일상,
+sub text: Galaxy S26,
+modern tech aesthetic, banner ratio 728x90<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+</div>
+</div>
+
+<!-- Accordion 2: 이미지/디자인 심화 -->
+<div class="accordion" id="acc-2">
+<div class="accordion-inner">
+<div class="info-tip">
+  1회차에서 Gemini 기본을 했으므로, 여기서는 <strong>Ideogram</strong>(한글 텍스트 최강)과 <strong>Canva AI</strong>(디자인 완성도 최강)를 집중 실습합니다. 비주얼 프롬프팅 3원칙: 구체적 묘사 + 스타일 지정 + 텍스트 분리.
+</div>
+
+<div class="qa-box">
+  <div class="qa-box-title">참석자 FAQ</div>
+  <div class="qa-item">
+    <div class="qa-q">Q: "AI 이미지를 뉴스에 써도 되나요? 저작권은?"</div>
+    <div class="qa-a">A: 핵심 원칙 3가지: (1) 뉴스 보도 시 반드시 'AI 생성 이미지' 라벨 표기, (2) 실존 인물/브랜드 모사 금지, (3) 광고/마케팅용은 내부 시안 단계에서 활용하고 최종본은 디자이너가 마무리하는 하이브리드 접근이 안전합니다.</div>
+  </div>
+</div>
+
+<div class="tool-links">
+  <a class="tool-link ideogram" href="https://ideogram.ai" target="_blank">Ideogram 열기</a>
+  <a class="tool-link canva" href="https://canva.com" target="_blank">Canva AI 열기</a>
+  <a class="tool-link chatgpt" href="https://chat.openai.com" target="_blank">ChatGPT (DALL-E) 열기</a>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">1</span>
+    <span class="prompt-title">Ideogram — 한글 텍스트 썸네일</span>
+    <span class="prompt-badge ideogram">Ideogram</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">Korean newspaper thumbnail design for article about AI regulation,
+clean modern layout, blue and white color scheme,
+text says '한국일보' in Korean<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">2</span>
+    <span class="prompt-title">DALL-E — 뉴스 라이브 배경</span>
+    <span class="prompt-badge chatgpt">ChatGPT DALL-E</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">뉴스 라이브 방송 배경 이미지를 만들어주세요.
+한국일보 로고 느낌의 남색(#003366) 배경에
+도시 스카이라인 실루엣,
+하단에 뉴스 티커 영역,
+모던하고 깔끔한 뉴스 채널 느낌.
+비율 16:9<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+<div class="prompt-block">
+  <div class="prompt-header">
+    <span class="prompt-num">3</span>
+    <span class="prompt-title">Canva AI Magic Design</span>
+    <span class="prompt-badge all">Canva AI</span>
+  </div>
+  <div class="prompt-body" onclick="copyFromBody(this)">[Canva AI 사용 단계]
+1. canva.com → "Magic Design" 검색
+2. "YouTube 썸네일" 또는 "뉴스 배너" 검색
+3. AI에게 수정 요청:
+   "배경을 남색으로 바꾸고, 제목을 '2026 AI 미디어 포럼'으로"
+4. Magic Switch로 사이즈 변환 (인스타 → 유튜브 → 배너)
+5. 바로 다운로드/공유<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
+</div>
+</div>
+</div>
+
+<!-- 전체 리뷰 섹션 -->
+<div class="section-label" style="margin-top:16px">전체 리뷰: 18개 과제 총정리</div>
+
+<div class="review-section">
+  <div class="review-title">1~4회차 전체 과제 현황</div>
+  <table class="review-table">
+    <thead>
+      <tr><th>회차</th><th>과제</th><th>부서</th><th>핵심 도구</th></tr>
+    </thead>
+    <tbody>
+      <tr class="review-session"><td colspan="4">1회차: AI 업무 도우미 (텍스트)</td></tr>
+      <tr><td>1</td><td>공지문/영문메일 작성</td><td>경영지원실</td><td>ChatGPT, Gemini, Claude</td></tr>
+      <tr><td>1</td><td>채용 이력서 분석</td><td>경영지원실</td><td>ChatGPT, Gemini, Claude</td></tr>
+      <tr><td>1</td><td>특파원 물가 조사</td><td>경영지원실</td><td>Gemini Deep Research, Perplexity</td></tr>
+      <tr><td>1</td><td>외고 소제목 생성</td><td>콘텐츠본부</td><td>ChatGPT, Gemini, Claude</td></tr>
+      <tr><td>1</td><td>협찬 제안서 작성</td><td>광고사업본부</td><td>ChatGPT, Gemini, Claude</td></tr>
+      <tr><td>1</td><td>어린이/청소년 콘텐츠</td><td>뉴스룸</td><td>ChatGPT, Claude</td></tr>
+      <tr><td>1</td><td>영상부 디자인 (Gemini 기본)</td><td>콘텐츠본부</td><td>Gemini Imagen</td></tr>
+      <tr class="review-session"><td colspan="4">2회차: 뉴스룸 혁신 (콘텐츠)</td></tr>
+      <tr><td>2</td><td>실시간 속기</td><td>뉴스룸</td><td>다글로, Otter.ai, 클로바노트</td></tr>
+      <tr><td>2</td><td>타지 체크</td><td>뉴스룸</td><td>Perplexity, ChatGPT</td></tr>
+      <tr><td>2</td><td>번역 콘텐츠 제작</td><td>뉴스룸</td><td>ChatGPT, Claude, DeepL</td></tr>
+      <tr><td>2</td><td>오디오 콘텐츠 제작</td><td>뉴스룸</td><td>NotebookLM</td></tr>
+      <tr><td>2</td><td>이메일 필터링/자동응답</td><td>콘텐츠본부</td><td>ChatGPT, Claude, Gemini</td></tr>
+      <tr class="review-session"><td colspan="4">3회차: AI 자동화 (데이터+챗봇)</td></tr>
+      <tr><td>3</td><td>조직도 엑셀 분석</td><td>경영지원실</td><td>ChatGPT Advanced Data Analysis</td></tr>
+      <tr><td>3</td><td>AI 건강관리 상담</td><td>경영지원실</td><td>ChatGPT, Claude</td></tr>
+      <tr><td>3</td><td>아카이브 '기억할 오늘'</td><td>콘텐츠본부</td><td>ChatGPT GPTs</td></tr>
+      <tr><td>3</td><td>전화 안내 챗봇</td><td>독자마케팅국</td><td>ChatGPT GPTs</td></tr>
+      <tr><td>3</td><td>포럼 콘텐츠 가공</td><td>광고사업본부</td><td>ChatGPT, Claude, Canva AI</td></tr>
+      <tr class="review-session"><td colspan="4">4회차: AI 비주얼 심화 + 미래 전략 (오늘)</td></tr>
+      <tr><td>4</td><td>AI 광고물 제작</td><td>광고사업본부</td><td>ChatGPT, Claude, Ideogram</td></tr>
+      <tr><td>4</td><td>이미지/디자인 심화</td><td>콘텐츠본부</td><td>Ideogram, Canva AI</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Q&A 섹션 -->
+<div class="section-label">Q&A</div>
+
+<div class="qa-box">
+  <div class="qa-box-title">전체 과정 FAQ</div>
+  <div class="qa-item">
+    <div class="qa-q">Q: "이 교육 이후에도 계속 배우려면 어디서 정보를 얻나요?"</div>
+    <div class="qa-a">A: 뉴스레터 1개 + 유튜브 1개만 꾸준히 따라가세요. 추천: The Rundown AI(영문, 매일 5분), AI 타임스(국문), Matt Wolfe 유튜브(AI 도구 리뷰).</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">Q: "회사 차원에서 AI 가이드라인을 만들어야 하지 않나요?"</div>
+    <div class="qa-a">A: 맞습니다. NYT처럼 "기사 작성에는 AI 직접 사용 금지, 리서치/요약/번역에는 적극 활용" 같은 가이드라인이 필요합니다. 이 교육이 그 첫걸음이 될 수 있습니다.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">Q: "AI 이미지 생성, 뉴스에 써도 되나요?"</div>
+    <div class="qa-a">A: 반드시 'AI 생성 이미지' 라벨 표기. 실존 인물/브랜드 모사 금지. 광고/마케팅은 시안 단계에서 활용하고 최종본은 디자이너가 마무리.</div>
+  </div>
+</div>
+
+<!-- 추천 리소스 -->
+<div class="section-label">추천 리소스</div>
+<div class="review-section">
+  <div class="review-title">계속 배우기 위한 채널</div>
+  <table class="review-table">
+    <thead>
+      <tr><th>유형</th><th>이름</th><th>설명</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>뉴스레터</td><td>The Rundown AI</td><td>매일 AI 뉴스 5분 요약 (영문)</td></tr>
+      <tr><td>뉴스레터</td><td>AI 타임스</td><td>한국 AI 뉴스 종합 (국문)</td></tr>
+      <tr><td>유튜브</td><td>Matt Wolfe</td><td>AI 도구 리뷰 전문 (영문)</td></tr>
+      <tr><td>유튜브</td><td>AI Explained</td><td>AI 트렌드 심층 분석 (영문)</td></tr>
+      <tr><td>커뮤니티</td><td>긱뉴스 (GeekNews)</td><td>한국 IT/AI 커뮤니티</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<div class="toast" id="toast">복사되었습니다</div>
+<div class="font-ctrl">
+  <button onclick="changeFontSize(-1)" title="글자 작게">A-</button>
+  <button onclick="changeFontSize(1)" title="글자 크게">A+</button>
+</div>
+
+<script>
+let currentAccordion = null;
+function toggleAccordion(id) {
+  const key = String(id);
+  const accEl = document.getElementById('acc-' + key);
+  const cardEl = document.getElementById('card-' + key);
+  if (currentAccordion && currentAccordion !== key) {
+    const prevAcc = document.getElementById('acc-' + currentAccordion);
+    const prevCard = document.getElementById('card-' + currentAccordion);
+    if (prevAcc) { prevAcc.style.maxHeight = '0'; prevAcc.classList.remove('open'); }
+    if (prevCard) prevCard.classList.remove('active');
+  }
+  if (accEl.classList.contains('open')) {
+    accEl.style.maxHeight = '0'; accEl.classList.remove('open');
+    if (cardEl) cardEl.classList.remove('active');
+    currentAccordion = null;
+  } else {
+    accEl.classList.add('open'); accEl.style.maxHeight = accEl.scrollHeight + 'px';
+    if (cardEl) cardEl.classList.add('active');
+    currentAccordion = key;
+    setTimeout(() => { accEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  }
+}
+const progressLabels = ['미시작', '진행중', '완료'];
+function cycleProgress(dot) { let state = parseInt(dot.getAttribute('data-state')); state = (state + 1) % 3; dot.setAttribute('data-state', state); const label = dot.nextElementSibling; if (label) label.textContent = progressLabels[state]; }
+function copyFromBody(el) { const clone = el.cloneNode(true); clone.querySelectorAll('button').forEach(b => b.remove()); doCopy(clone.textContent.trim()); }
+function copyPrompt(btn) { const body = btn.parentElement; const clone = body.cloneNode(true); clone.querySelectorAll('button').forEach(b => b.remove()); doCopy(clone.textContent.trim()); btn.textContent = '복사 완료!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1500); }
+function doCopy(text) { navigator.clipboard.writeText(text).then(() => { showToast('복사되었습니다'); }).catch(() => { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('복사되었습니다'); }); }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+let fontSize = 15;
+function changeFontSize(delta) { fontSize = Math.max(12, Math.min(22, fontSize + delta)); document.documentElement.style.setProperty('--font-size', fontSize + 'px'); }
+</script>
+</body>
+</html>
