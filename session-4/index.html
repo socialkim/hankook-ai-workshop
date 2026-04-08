@@ -97,6 +97,15 @@ body { font-family: var(--font); background: var(--hk-bg); color: var(--hk-text)
 .qa-q { font-weight: 700; color: var(--hk-text); margin-bottom: 2px; }
 .qa-a { color: var(--hk-text2); }
 
+/* Download section */
+.dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px) { .dl-grid { grid-template-columns: 1fr; } }
+.dl-item { display: flex; align-items: center; gap: 14px; padding: 14px; background: #F8FAFB; border: 1px solid var(--hk-border); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit; }
+.dl-item:hover { border-color: var(--hk-navy); background: var(--hk-navy-light); }
+.dl-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: var(--hk-navy-light); color: var(--hk-navy); }
+.dl-item-info h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+.dl-item-info span { font-size: 0.75rem; color: var(--hk-text2); }
+
 /* Review section */
 .review-section { background: var(--hk-white); border: 1px solid var(--hk-border); border-radius: var(--radius); padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow); }
 .review-title { font-size: 18px; font-weight: 800; color: var(--hk-navy); margin-bottom: 16px; }
@@ -265,6 +274,40 @@ text says '한국일보' in Korean<button class="copy-btn" onclick="event.stopPr
 4. Magic Switch로 사이즈 변환 (인스타 → 유튜브 → 배너)
 5. 바로 다운로드/공유<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
 </div>
+</div>
+</div>
+
+<!-- Section: 예시 파일 다운로드 -->
+<div class="section-label" style="margin-top:16px">예시 파일 다운로드</div>
+
+<div class="card-grid" style="grid-template-columns: 1fr;">
+  <div class="card" onclick="toggleAccordion('dl')" id="card-dl" style="cursor:pointer">
+    <div class="card-icon">&#x1F4E5;</div>
+    <div class="card-title">실습 예시 파일</div>
+    <div class="card-desc">실습 중 프롬프트에 붙여넣을 더미 데이터 파일을 다운로드하세요</div>
+  </div>
+</div>
+
+<div class="accordion" id="acc-dl">
+<div class="accordion-inner">
+  <div class="dl-grid">
+    <a class="dl-item" href="../sample-files/sample-ad-brief.txt" download="광고_소재_브리프.txt">
+      <div class="dl-icon">&#x1F4C4;</div>
+      <div class="dl-item-info">
+        <h4>광고 소재 브리프</h4>
+        <span>실습 1에서 사용 (AI 광고물 제작)</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+    <a class="dl-item" href="../sample-files/participant-faq.txt" download="참석자_FAQ.txt">
+      <div class="dl-icon">&#x2753;</div>
+      <div class="dl-item-info">
+        <h4>참석자 FAQ (16개 Q&amp;A)</h4>
+        <span>보안/개인정보/도구 관련 FAQ 모음</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+  </div>
 </div>
 </div>
 

@@ -382,6 +382,39 @@ body {
 }
 .acc-section-title:first-child { margin-top: 0; }
 
+/* Download section */
+.dl-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 640px) { .dl-grid { grid-template-columns: 1fr; } }
+.dl-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: #F8FAFB;
+  border: 1px solid var(--hk-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+.dl-item:hover { border-color: var(--hk-navy); background: var(--hk-navy-light); }
+.dl-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  background: var(--hk-navy-light);
+  color: var(--hk-navy);
+}
+.dl-item-info h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+.dl-item-info span { font-size: 0.75rem; color: var(--hk-text2); }
+
 .toast {
   position: fixed;
   bottom: 80px; left: 50%;
@@ -792,6 +825,64 @@ body {
 4. Gmail 필터 설정 가이드<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
 </div>
 
+</div>
+</div>
+
+<!-- Section: 예시 파일 다운로드 -->
+<div class="section-label" style="margin-top:16px">예시 파일 다운로드</div>
+
+<div class="card-grid" style="grid-template-columns: 1fr;">
+  <div class="card" onclick="toggleAccordion('dl')" id="card-dl" style="cursor:pointer">
+    <div class="card-icon">&#x1F4E5;</div>
+    <div class="card-title">실습 예시 파일</div>
+    <div class="card-desc">실습 중 프롬프트에 붙여넣을 더미 데이터 파일을 다운로드하세요</div>
+  </div>
+</div>
+
+<div class="accordion" id="acc-dl">
+<div class="accordion-inner">
+  <div class="dl-grid">
+    <a class="dl-item" href="../sample-files/sample-press-briefing.txt" download="기자회견_녹취.txt">
+      <div class="dl-icon">&#x1F4C4;</div>
+      <div class="dl-item-info">
+        <h4>기자회견 녹취 데이터</h4>
+        <span>실습 1에서 사용 (실시간 속기)</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+    <a class="dl-item" href="../sample-files/news-monitoring-keywords.txt" download="타지체크_키워드.txt">
+      <div class="dl-icon">&#x1F4C4;</div>
+      <div class="dl-item-info">
+        <h4>타지 체크 키워드 목록</h4>
+        <span>실습 2에서 사용 (타지 체크)</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+    <a class="dl-item" href="../sample-files/sample-news-articles-3.txt" download="뉴스_기사_3개.txt">
+      <div class="dl-icon">&#x1F4C4;</div>
+      <div class="dl-item-info">
+        <h4>뉴스 기사 3개</h4>
+        <span>실습 3~4에서 사용 (번역/오디오)</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+    <a class="dl-item" href="../sample-files/sample-english-email.txt" download="영문_메일_샘플.txt">
+      <div class="dl-icon">&#x1F4C4;</div>
+      <div class="dl-item-info">
+        <h4>영문 메일 샘플</h4>
+        <span>실습 5에서 사용 (이메일 필터링)</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+    <a class="dl-item" href="../sample-files/participant-faq.txt" download="참석자_FAQ.txt">
+      <div class="dl-icon">&#x2753;</div>
+      <div class="dl-item-info">
+        <h4>참석자 FAQ (16개 Q&amp;A)</h4>
+        <span>보안/개인정보/도구 관련 FAQ 모음</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+  </div>
 </div>
 </div>
 

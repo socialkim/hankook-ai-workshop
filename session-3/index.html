@@ -96,6 +96,15 @@ body { font-family: var(--font); background: var(--hk-bg); color: var(--hk-text)
 .qa-item:last-child { margin-bottom: 0; }
 .qa-q { font-weight: 700; color: var(--hk-text); margin-bottom: 2px; }
 .qa-a { color: var(--hk-text2); }
+/* Download section */
+.dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px) { .dl-grid { grid-template-columns: 1fr; } }
+.dl-item { display: flex; align-items: center; gap: 14px; padding: 14px; background: #F8FAFB; border: 1px solid var(--hk-border); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit; }
+.dl-item:hover { border-color: var(--hk-navy); background: var(--hk-navy-light); }
+.dl-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: var(--hk-navy-light); color: var(--hk-navy); }
+.dl-item-info h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+.dl-item-info span { font-size: 0.75rem; color: var(--hk-text2); }
+
 .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--hk-dark); color: #fff; padding: 12px 28px; border-radius: 12px; font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.35s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .font-ctrl { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 6px; z-index: 100; }
@@ -408,6 +417,56 @@ Step 6: "게시" → 링크 복사 → 공유
 - 한국일보 공식 계정용
 - 한국어와 영어 버전 각 1개<button class="copy-btn" onclick="event.stopPropagation();copyPrompt(this)">복사</button></div>
 </div>
+</div>
+</div>
+
+<!-- Section: 예시 파일 다운로드 -->
+<div class="section-label" style="margin-top:16px">예시 파일 다운로드</div>
+
+<div class="card-grid" style="grid-template-columns: 1fr;">
+  <div class="card" onclick="toggleAccordion('dl')" id="card-dl" style="cursor:pointer">
+    <div class="card-icon">&#x1F4E5;</div>
+    <div class="card-title">실습 예시 파일</div>
+    <div class="card-desc">실습 중 프롬프트에 붙여넣을 더미 데이터 파일을 다운로드하세요</div>
+  </div>
+</div>
+
+<div class="accordion" id="acc-dl">
+<div class="accordion-inner">
+  <div class="dl-grid">
+    <a class="dl-item" href="../sample-files/dummy-org-chart-data.txt" download="조직도_데이터.txt">
+      <div class="dl-icon">&#x1F4C4;</div>
+      <div class="dl-item-info">
+        <h4>조직도 데이터</h4>
+        <span>실습 1에서 사용 (엑셀 분석)</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+    <a class="dl-item" href="../sample-files/dummy-health-checkup.txt" download="건강검진_결과.txt">
+      <div class="dl-icon">&#x1F4C4;</div>
+      <div class="dl-item-info">
+        <h4>더미 건강검진 결과</h4>
+        <span>실습 2에서 사용 (AI 건강관리)</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+    <a class="dl-item" href="../sample-files/sample-forum-summary.txt" download="포럼_요약.txt">
+      <div class="dl-icon">&#x1F4C4;</div>
+      <div class="dl-item-info">
+        <h4>포럼 요약 데이터</h4>
+        <span>실습 5에서 사용 (포럼 콘텐츠 가공)</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+    <a class="dl-item" href="../sample-files/participant-faq.txt" download="참석자_FAQ.txt">
+      <div class="dl-icon">&#x2753;</div>
+      <div class="dl-item-info">
+        <h4>참석자 FAQ (16개 Q&amp;A)</h4>
+        <span>보안/개인정보/도구 관련 FAQ 모음</span>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--hk-red);font-weight:600;">다운로드 &darr;</div>
+    </a>
+  </div>
 </div>
 </div>
 
